@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
 
 app = Flask(__name__)
+
 app.secret_key = "secret123"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lostfound.db"
@@ -30,7 +31,7 @@ class LostItem(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-@app.route("/", methods=["GET","POST"])
+@app.route("/", methods=["GET", "POST"])
 def home():
 
     if "user" not in session:
@@ -59,19 +60,22 @@ def home():
         db.session.add(new_item)
         db.session.commit()
 
+        flash("Item added successfully!")
+
         return redirect("/")
 
     search = request.args.get("search")
 
     if search:
+
         lost_items = LostItem.query.filter(
             LostItem.item.contains(search),
-            LostItem.type=="Lost"
+            LostItem.type == "Lost"
         ).all()
 
         found_items = LostItem.query.filter(
             LostItem.item.contains(search),
-            LostItem.type=="Found"
+            LostItem.type == "Found"
         ).all()
 
     else:
@@ -105,7 +109,7 @@ def myitems():
     return render_template("myitems.html", items=items)
 
 
-@app.route("/signup", methods=["GET","POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
 
     if request.method == "POST":
@@ -118,12 +122,14 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
+        flash("Signup successful! Please login.")
+
         return redirect("/login")
 
     return render_template("signup.html")
 
 
-@app.route("/login", methods=["GET","POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
@@ -134,8 +140,15 @@ def login():
         user = User.query.filter_by(username=username, password=password).first()
 
         if user:
+
             session["user"] = username
+            flash("Login successful!")
+
             return redirect("/")
+
+        else:
+
+            flash("Invalid username or password")
 
     return render_template("login.html")
 
@@ -144,6 +157,8 @@ def login():
 def logout():
 
     session.pop("user", None)
+
+    flash("Logged out successfully!")
 
     return redirect("/login")
 
@@ -156,10 +171,12 @@ def delete(id):
     db.session.delete(item)
     db.session.commit()
 
+    flash("Item deleted successfully!")
+
     return redirect("/")
 
 
-@app.route("/update/<int:id>", methods=["GET","POST"])
+@app.route("/update/<int:id>", methods=["GET", "POST"])
 def update(id):
 
     item = LostItem.query.get_or_404(id)
@@ -170,6 +187,8 @@ def update(id):
         item.desc = request.form["desc"]
 
         db.session.commit()
+
+        flash("Item updated successfully!")
 
         return redirect("/")
 
@@ -182,3 +201,5 @@ if __name__ == "__main__":
         db.create_all()
 
     app.run(debug=True)
+
+    
