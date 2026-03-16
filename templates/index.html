@@ -12,15 +12,14 @@
 <body>
 
 <div class="container mt-5">
-    {% with messages = get_flashed_messages() %}
+
+{% with messages = get_flashed_messages() %}
 {% if messages %}
 
 <div class="alert alert-success">
 
 {% for message in messages %}
-
 <p>{{ message }}</p>
-
 {% endfor %}
 
 </div>
@@ -34,7 +33,6 @@
 <!-- Top Buttons -->
 
 <a href="/myitems" class="btn btn-dark mb-3">My Items</a>
-
 <a href="/logout" class="btn btn-danger mb-3">Logout</a>
 
 
@@ -55,7 +53,7 @@
 
 <!-- Add Item Form -->
 
-<form action="/" method="POST" enctype="multipart/form-data" class="card p-4 shadow">
+<form action="/" method="POST" enctype="multipart/form-data" class="card p-4 shadow mb-5">
 
 <div class="mb-3">
 <label class="form-label">Item Name</label>
@@ -90,38 +88,27 @@
 </form>
 
 
-<hr>
+<!-- Lost Items -->
 
+<h2 class="mt-4">Lost Items</h2>
 
-<h2>Lost Items</h2>
-
-<table class="table table-striped">
-
-<tr>
-
-<th>ID</th>
-<th>Image</th>
-<th>Item</th>
-<th>Description</th>
-<th>Actions</th>
-
-</tr>
+<div class="row">
 
 {% for item in lost_items %}
 
-<tr>
+<div class="col-md-4">
 
-<td>{{item.id}}</td>
+<div class="card shadow mb-4">
 
-<td>
-<img src="{{ url_for('static', filename='uploads/' + item.image) }}" width="80">
-</td>
+<img src="{{ url_for('static', filename='uploads/' + item.image) }}"
+class="card-img-top"
+style="height:200px; object-fit:cover;">
 
-<td>{{item.item}}</td>
+<div class="card-body">
 
-<td>{{item.desc}}</td>
+<h5 class="card-title">{{item.item}}</h5>
 
-<td>
+<p class="card-text">{{item.desc}}</p>
 
 <a href="/update/{{item.id}}" class="btn btn-warning btn-sm">Edit</a>
 
@@ -131,44 +118,38 @@
 Contact Owner
 </a>
 
-</td>
+</div>
 
-</tr>
+</div>
+
+</div>
 
 {% endfor %}
 
-</table>
+</div>
 
+
+<!-- Found Items -->
 
 <h2 class="mt-5">Found Items</h2>
 
-<table class="table table-striped">
-
-<tr>
-
-<th>ID</th>
-<th>Image</th>
-<th>Item</th>
-<th>Description</th>
-<th>Actions</th>
-
-</tr>
+<div class="row">
 
 {% for item in found_items %}
 
-<tr>
+<div class="col-md-4">
 
-<td>{{item.id}}</td>
+<div class="card shadow mb-4">
 
-<td>
-<img src="{{ url_for('static', filename='uploads/' + item.image) }}" width="80">
-</td>
+<img src="{{ url_for('static', filename='uploads/' + item.image) }}"
+class="card-img-top"
+style="height:200px; object-fit:cover;">
 
-<td>{{item.item}}</td>
+<div class="card-body">
 
-<td>{{item.desc}}</td>
+<h5 class="card-title">{{item.item}}</h5>
 
-<td>
+<p class="card-text">{{item.desc}}</p>
 
 <a href="/update/{{item.id}}" class="btn btn-warning btn-sm">Edit</a>
 
@@ -178,13 +159,15 @@ Contact Owner
 Contact Owner
 </a>
 
-</td>
+</div>
 
-</tr>
+</div>
+
+</div>
 
 {% endfor %}
 
-</table>
+</div>
 
 </div>
 
